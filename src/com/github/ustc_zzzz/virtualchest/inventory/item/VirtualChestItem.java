@@ -34,6 +34,7 @@ public class VirtualChestItem
     public static final DataQuery SECONDARY_ACTION = DataQuery.of("SecondaryAction");
     public static final DataQuery PRIMARY_SHIFT_ACTION = DataQuery.of("PrimaryShiftAction");
     public static final DataQuery SECONDARY_SHIFT_ACTION = DataQuery.of("SecondaryShiftAction");
+    public static final DataQuery MIDDLE_ACTION = DataQuery.of("MiddleAction");
 
     private final VirtualChestPlugin plugin;
     private final VirtualChestItemStackSerializer serializer;
@@ -45,6 +46,7 @@ public class VirtualChestItem
     private final VirtualChestActionDispatcher secondaryAction;
     private final VirtualChestActionDispatcher primaryShiftAction;
     private final VirtualChestActionDispatcher secondaryShiftAction;
+    private final VirtualChestActionDispatcher middleAction;
 
     public static DataContainer serialize(VirtualChestPlugin plugin, VirtualChestItem item) throws InvalidDataException
     {
@@ -58,6 +60,7 @@ public class VirtualChestItem
         item.secondaryAction.getObjectForSerialization().ifPresent(o -> container.set(SECONDARY_ACTION, o));
         item.primaryShiftAction.getObjectForSerialization().ifPresent(o -> container.set(PRIMARY_SHIFT_ACTION, o));
         item.secondaryShiftAction.getObjectForSerialization().ifPresent(o -> container.set(SECONDARY_SHIFT_ACTION, o));
+        item.middleAction.getObjectForSerialization().ifPresent(o -> container.set(MIDDLE_ACTION, o));
 
         return container;
     }
@@ -76,19 +79,23 @@ public class VirtualChestItem
         List<DataView> secondaryList = getViewListOrSingletonList(SECONDARY_ACTION, data);
         List<DataView> primaryShiftList = getViewListOrSingletonList(PRIMARY_SHIFT_ACTION, data);
         List<DataView> secondaryShiftList = getViewListOrSingletonList(SECONDARY_SHIFT_ACTION, data);
+        List<DataView> middleList = getViewListOrSingletonList(MIDDLE_ACTION, data);
 
         List<DataView> primaryListFinal = primaryList.isEmpty() ? actionList : primaryList;
         List<DataView> secondaryListFinal = secondaryList.isEmpty() ? actionList : secondaryList;
         List<DataView> primaryShiftListFinal = primaryShiftList.isEmpty() ? primaryListFinal : primaryShiftList;
         List<DataView> secondaryShiftListFinal = secondaryShiftList.isEmpty() ? secondaryListFinal : secondaryShiftList;
+        List<DataView> middleListFinal = middleList.isEmpty() ? actionList : middleList;
 
         VirtualChestActionDispatcher primaryAction = new VirtualChestActionDispatcher(primaryListFinal);
         VirtualChestActionDispatcher secondaryAction = new VirtualChestActionDispatcher(secondaryListFinal);
         VirtualChestActionDispatcher primaryShiftAction = new VirtualChestActionDispatcher(primaryShiftListFinal);
         VirtualChestActionDispatcher secondaryShiftAction = new VirtualChestActionDispatcher(secondaryShiftListFinal);
+        VirtualChestActionDispatcher middleAction = new VirtualChestActionDispatcher(middleListFinal);
 
         return new VirtualChestItem(plugin, serializedStack, requirements,
-                primaryAction, secondaryAction, primaryShiftAction, secondaryShiftAction, ignoredPermissions);
+                primaryAction, secondaryAction, primaryShiftAction, secondaryShiftAction,
+                middleAction, ignoredPermissions);
     }
 
     private VirtualChestItem(
@@ -99,6 +106,7 @@ public class VirtualChestItem
             VirtualChestActionDispatcher secondaryAction,
             VirtualChestActionDispatcher primaryShiftAction,
             VirtualChestActionDispatcher secondaryShiftAction,
+            VirtualChestActionDispatcher middleAction,
             List<String> ignoredPermissions)
     {
         this.plugin = plugin;
@@ -111,6 +119,7 @@ public class VirtualChestItem
         this.primaryShiftAction = primaryShiftAction;
         this.secondaryShiftAction = secondaryShiftAction;
         this.ignoredPermissions = ignoredPermissions;
+        this.middleAction = middleAction;
     }
 
     public static List<DataView> getViewListOrSingletonList(DataQuery key, DataView view)
@@ -159,6 +168,10 @@ public class VirtualChestItem
         if (status.isSecondary)
         {
             return status.isShift ? Optional.of(this.secondaryShiftAction) : Optional.of(this.secondaryAction);
+        }
+        if (status.isMiddle)
+        {
+            return Optional.of(this.middleAction);
         }
         return Optional.empty();
     }

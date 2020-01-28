@@ -242,12 +242,14 @@ public final class VirtualChestInventory implements VirtualChest, DataSerializab
         public final boolean isShift;
         public final boolean isPrimary;
         public final boolean isSecondary;
+        public final boolean isMiddle;
 
-        public ClickStatus(boolean isShift, boolean isPrimary, boolean isSecondary)
+        public ClickStatus(boolean isShift, boolean isPrimary, boolean isSecondary, boolean isMiddle)
         {
             this.isShift = isShift;
             this.isPrimary = isPrimary;
             this.isSecondary = isSecondary;
+            this.isMiddle = isMiddle;
         }
 
         public ClickStatus(ClickInventoryEvent e)
@@ -255,13 +257,14 @@ public final class VirtualChestInventory implements VirtualChest, DataSerializab
             this.isShift = e instanceof ClickInventoryEvent.Shift;
             this.isPrimary = e instanceof ClickInventoryEvent.Primary;
             this.isSecondary = e instanceof ClickInventoryEvent.Secondary;
+            this.isMiddle = e instanceof ClickInventoryEvent.Middle;
         }
 
         @Override
         public String toString()
         {
-            String format = "ClickStatus{isShift=%s, isPrimary=%s, isSecondary=%s}";
-            return String.format(format, this.isShift, this.isPrimary, this.isSecondary);
+            String format = "ClickStatus{isShift=%s, isPrimary=%s, isSecondary=%s, isMiddle=%s}";
+            return String.format(format, this.isShift, this.isPrimary, this.isSecondary, this.isMiddle);
         }
     }
 

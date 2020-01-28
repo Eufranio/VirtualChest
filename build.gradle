@@ -52,7 +52,7 @@ repositories {
     }
     maven {
         name = 'bstats-repo'
-        url = 'http://repo.bstats.org/content/repositories/releases'
+        url = 'https://repo.codemc.org/repository/maven-public'
     }
     maven {
         name = 'jitpack'
@@ -98,7 +98,7 @@ artifacts {
 }
 
 dependencies {
-    compile 'org.bstats:bstats-sponge:1.2'
+    compile 'org.bstats:bstats-sponge:1.5'
     compile 'org.javalite:activejdbc:1.4.13'
 
     compile 'org.spongepowered:spongeapi:7.2.0-SNAPSHOT'
@@ -156,7 +156,7 @@ shadowJar {
         it.include it.dependency('org.javalite:.*')
     }
 
-    relocate 'org.bstats', project.group.toString() + '.virtualchest.util.repackage.org.bstats'
+    //relocate 'org.bstats', project.group.toString() + '.virtualchest.util.repackage.org.bstats'
     relocate 'org.javalite', project.group.toString() + '.virtualchest.util.repackage.org.javalite'
 }
 
